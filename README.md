@@ -6,7 +6,7 @@ This repository is an unofficial implementation of MixMatch with Pytorch.
 
 **Original Repo (tensorflow)**: [here](https://github.com/google-research/mixmatch)
 
-**Directory structure of used dataset**: [here](https://www.kaggle.com/swaroopkml/cifar10-pngs-in-folders?)
+**Directory structure of used dataset**: [CIFAR10](https://www.kaggle.com/swaroopkml/cifar10-pngs-in-folders?)
 
 ## Key mechanisms implemented in this code
 1. Augmentation
