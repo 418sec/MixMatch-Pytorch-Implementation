@@ -2,9 +2,9 @@
 
 This repository is an unofficial implementation of MixMatch with Pytorch.  
 
-**Original Paper**: [Realistic Evaluation of Deep Semi-Supervised Learning Algorithms](https://arxiv.org/abs/1804.09170), by Avital Oliver*, Augustus Odena*, Colin Raffel*, Ekin D. Cubuk, and Ian J. Goodfellow. 
+**Original Paper**: [MixMatch: A Holistic Approach to Semi-Supervised Learning](https://arxiv.org/abs/1905.02249), by David Berthelot, Nicholas Carlini, Ian Goodfellow, Nicolas Papernot, Avital Oliver, Colin Raffel. 
 
-**Original Repo**: [here](https://github.com/brain-research/realistic-ssl-evaluation)
+**Original Repo**: [here](https://github.com/google-research/mixmatch)
 
 ### Key mechanisms implemented in this code
 1. Augmentation
@@ -17,3 +17,8 @@ This repository is an unofficial implementation of MixMatch with Pytorch.
 The Mean-Teacher model used in this code follows the original implementation, found [here](https://github.com/CuriousAI/mean-teacher)
 
 ** This repo applis varied ratio of labels instead of the absolute labels amount
+
+### Reference
+[MixMatch: A Holistic Approach to Semi-Supervised Learning](https://arxiv.org/abs/1905.02249), by David Berthelot, Nicholas Carlini, Ian Goodfellow, Nicolas Papernot, Avital Oliver, Colin Raffel.
+
+[Mean teachers are better role models: Weight-averaged consistency targets improve semi-supervised deep learning results](https://arxiv.org/abs/1703.01780), by Antti Tarvainen, Harri Valpola
