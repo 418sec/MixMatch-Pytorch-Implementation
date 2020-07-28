@@ -16,7 +16,7 @@ This repository is an unofficial implementation of MixMatch with Pytorch.
 
 The Mean-Teacher model used in this code follows the original implementation, found [here](https://github.com/CuriousAI/mean-teacher)
 
-** This repo applis varied ratio of labels instead of the absolute labels amount
+** This repo applies varied ratio of labels instead of the absolute label amount
 
 ## Reference
 [MixMatch: A Holistic Approach to Semi-Supervised Learning](https://arxiv.org/abs/1905.02249), by David Berthelot, Nicholas Carlini, Ian Goodfellow, Nicolas Papernot, Avital Oliver, Colin Raffel.
