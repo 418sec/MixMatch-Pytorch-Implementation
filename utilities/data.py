@@ -3,16 +3,12 @@ import itertools
 import torchvision.transforms as transforms
 from torch.utils.data.sampler import Sampler
 
-class TwoStreamBatchSampler(Sampler): # copy from: Curious AI
+class TwoStreamBatchSampler(Sampler):
     
     """Iterate two sets of indices
     An 'epoch' is one iteration through the primary indices.
     During the epoch, the secondary indices are iterated through
-    as many times as needed.
-
-    e.g. 
-    total training = 837, batch_size=15, 
-    data_loader = 837/15=56, unlabel_data=92, each_batch_has_unlabel = 92/56=2, each_batch_has_label=745/56=13
+    as many times as needed
     """
     def __init__(self, primary_indices, secondary_indices, batch_size, secondary_batch_size):
         """
@@ -26,7 +22,7 @@ class TwoStreamBatchSampler(Sampler): # copy from: Curious AI
         self.secondary_batch_size = secondary_batch_size # 62: one batch has 62 labeled
         self.primary_batch_size = batch_size - secondary_batch_size # 100-62=38: one batch has 38 unlabeled
 
-    def __iter__(self): # BatchSampler的作用就是将前面的Sampler采样得到的索引值进行合并，当数量等于一个batch大小后就将这一批的索引值返回。
+    def __iter__(self):
         primary_iter = iterate_once(self.primary_indices)
         secondary_iter = iterate_eternally(self.secondary_indices)
         return (
@@ -39,16 +35,16 @@ class TwoStreamBatchSampler(Sampler): # copy from: Curious AI
     def __len__(self):
         return len(self.primary_indices) // self.primary_batch_size 
 
-def iterate_once(iterable): # copy from: Curious AI
+def iterate_once(iterable):
     return np.random.permutation(iterable) # schuffle index list
 
-def iterate_eternally(indices): # copy from: Curious AI
+def iterate_eternally(indices):
     def infinite_shuffles():
         while True:
             yield np.random.permutation(indices)
     return itertools.chain.from_iterable(infinite_shuffles())
 
-def grouper(iterable, n): # copy from: Curious AI
+def grouper(iterable, n):
     "Collect data into fixed-length chunks or blocks"
     # grouper('ABCDEFG', 3) --> ABC DEF"
     args = [iter(iterable)] * n
