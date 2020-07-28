@@ -1,29 +1,15 @@
-- id: test_cifar10
-  num_epochs: 1
+- id: train_mixmatch
+  root: cifar10
+  num_epochs: 100
   batch_size: 128
   learning_rate: 0.0001
-  root: cifar10
   val_ratio: 0.1
-  unlabel_ratio: 0.90
+  unlabel_ratio: 0.9
   num_class: 10
   seed: [1]
   label_batch_size: 64
-  rampup_length: 40
-  mt_alpha: 0.99
-  T: 0.4
-  mm_alpha: 0.95
-
-- id: test_cifar10_2
-  num_epochs: 1
-  batch_size: 20
-  learning_rate: 0.0001
-  root: cifar10
-  val_ratio: 0.1
-  unlabel_ratio: 0.90
-  num_class: 10
-  seed: [1]
-  label_batch_size: null
-  rampup_length: 40
-  mt_alpha: 0.99
-  T: 0.4
-  mm_alpha: 0.95
+  rampup_length: 100
+  mt_alpha: 0.999
+  mm_alpha: 0.75
+  T: 0.5
+  
