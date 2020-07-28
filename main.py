@@ -15,12 +15,14 @@ from utilities.utils import *
 
 id = sys.argv[1] # experiment id
 
-# paths
+# output paths
 create_dir(id)
 train_dir = data_dir(id,'train.csv')
 val_dir = data_dir(id,'val.csv')
 test_dir = data_dir(id,'test.csv')
 save_model = model_dir(id)
+
+# tensorboard path
 writer_train_acc = SummaryWriter(log_dir(id,'train_acc'))
 writer_val_acc = SummaryWriter(log_dir(id,'val_acc'))
 writer_train_loss = SummaryWriter(log_dir(id,'train_loss'))
@@ -43,17 +45,18 @@ def main(seed):
 
     # 1. create master
     cifar10(id, config.get('root'), config.get('val_ratio'), config.get('unlabel_ratio')).master()
-    # 2. check GPU
+    # 2. GPU
     device = torch.device('cuda')
     logger('device: {}'.format(torch.cuda.device_count()))
     
-    # 4. data loader: train & val
+    # 3. labeled batch size
     if config.get('label_batch_size') is None:
         label_batch_size = config.get('batch_size')/2 # mixmatch paper suggestion
     else: 
         label_batch_size = config.get('label_batch_size')
     unlabel_batch_size = config.get('batch_size') - label_batch_size
-
+    
+    # 4. load dataset
     train_dataset = CIFAR10('train', train_dir, remove_unlabel=False)
     unlabel_idx, label_idx = train_dataset.get_index()
     batch_sampler = data.TwoStreamBatchSampler(unlabel_idx, label_idx, config.get('batch_size'), label_batch_size)
@@ -63,24 +66,21 @@ def main(seed):
     val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=config.get('batch_size'), shuffle=True)
 
     logger('training labels: {}'.format(len(label_idx)))
-    logger('training dataset: {}'.format(len(train_dataset)))
-    logger('training dataloader: {}'.format(len(train_loader)))
-    logger('validation dataset: {}'.format(len(val_dataset)))
-    logger('validation dataloader: {}'.format(len(val_loader)))
     
-    # 6. import torch.renet50 & change output layer
+    # 5. create student & teacher model
     model = nn.DataParallel(WideResnet50(config.get('num_class'))).to(device)
     ema_model = nn.DataParallel(WideResnet50(config.get('num_class'), ema=True)).to(device)
-
+    
+    # 6. consistency loss (classification loss: def class_criterion())
     consis_criterion = nn.MSELoss().to(device)
+    
     # 7. optimizer
     optimizer = torch.optim.Adam(model.parameters(), lr=config.get('learning_rate'), amsgrad=True)
 
-    # 9. train & val
+    # 8. train & val
     train_start = time.time()
     best_acc = 0
     best_epoch = 0
-
     for epoch in range(config.get('num_epochs')):
         train_loss, train_acc = train(model, ema_model, optimizer, train_loader, epoch, unlabel_batch_size, label_batch_size, consis_criterion, device)
         print('global_step:', global_step)
@@ -97,22 +97,18 @@ def main(seed):
         
         writer_train_acc.add_scalar('acc',train_acc/len(train_loader), epoch) # same tag id, plot two lines in same graph
         writer_val_acc.add_scalar('acc', val_acc/len(val_loader), epoch)
-    
-    logger('global step: {}'.format(global_step))
-    logger('best model epoch: {}'.format(best_epoch))
 
-    # 11. close tensorboard writer
+    # 9. close tensorboard writer
     writer_train_acc.close()
     writer_val_acc.close()
 
 def train(model, ema_model, optimizer, train_loader, epoch, unlabel_batch_size, label_batch_size, consis_criterion, device):
-    
     global global_step
     softmax = nn.Softmax(dim=1)
     train_loss = 0
     train_acc = 0
-
     for i, (input_1, input_2, target) in enumerate(train_loader):
+        # twice augmentation for unlabeled data
         input_u1, input_l = torch.split(input_1, [unlabel_batch_size, label_batch_size])
         input_u2 = torch.split(input_2, [unlabel_batch_size, label_batch_size])[0]
         target_l = torch.split(target, [unlabel_batch_size, label_batch_size])[1]
@@ -122,7 +118,7 @@ def train(model, ema_model, optimizer, train_loader, epoch, unlabel_batch_size, 
         input_l = input_l.to(device)
         target_l = target_l.to(device)
 
-        # guess label for unlabel data
+        # guess label
         with torch.no_grad():
             outputs_u1 = softmax(model(input_u1))
             outputs_u2 = softmax(model(input_u2))
@@ -152,15 +148,12 @@ def train(model, ema_model, optimizer, train_loader, epoch, unlabel_batch_size, 
         class_loss = class_criterion(softmax(model(mixed_input_l)), torch.max(mixed_target_l, 1)[1], device) # CrossEntropy doest not support one-hot
         consis_loss = consis_criterion(softmax(model(mixed_input_u)), mixed_target_u)
         loss = class_loss + consis_weight(epoch, config.get('rampup_length')) * consis_loss
-        
 
         # update student model
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
         global_step += 1
-
-        print('global_step:', global_step)
 
         # update teacher model
         update_ema_variables(ema_model,model, config.get('mt_alpha'), global_step)
