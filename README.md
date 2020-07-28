@@ -6,7 +6,7 @@ This repository is an unofficial implementation of MixMatch with Pytorch.
 
 **Original Repo (tensorflow)**: [here](https://github.com/google-research/mixmatch)
 
-### Key mechanisms implemented in this code
+## Key mechanisms implemented in this code
 1. Augmentation
 2. Guess Label
 3. Entropy Minimization by Sharpen
@@ -18,7 +18,7 @@ The Mean-Teacher model used in this code follows the original implementation, fo
 
 ** This repo applis varied ratio of labels instead of the absolute labels amount
 
-### Reference
+## Reference
 [MixMatch: A Holistic Approach to Semi-Supervised Learning](https://arxiv.org/abs/1905.02249), by David Berthelot, Nicholas Carlini, Ian Goodfellow, Nicolas Papernot, Avital Oliver, Colin Raffel.
 
 [Mean teachers are better role models: Weight-averaged consistency targets improve semi-supervised deep learning results](https://arxiv.org/abs/1703.01780), by Antti Tarvainen, Harri Valpola
