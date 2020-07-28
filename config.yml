@@ -6,7 +6,6 @@
   val_ratio: 0.1
   unlabel_ratio: 0.9
   num_class: 10
-  seed: [1]
   label_batch_size: 64
   rampup_length: 100
   mt_alpha: 0.999
