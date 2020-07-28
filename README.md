@@ -4,7 +4,7 @@ This repository is an unofficial implementation of MixMatch with Pytorch.
 
 **Original Paper**: [MixMatch: A Holistic Approach to Semi-Supervised Learning](https://arxiv.org/abs/1905.02249), by David Berthelot, Nicholas Carlini, Ian Goodfellow, Nicolas Papernot, Avital Oliver, Colin Raffel. 
 
-**Original Repo**: [here](https://github.com/google-research/mixmatch)
+**Original Repo (tensorflow)**: [here](https://github.com/google-research/mixmatch)
 
 ### Key mechanisms implemented in this code
 1. Augmentation
