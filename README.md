@@ -1,6 +1,6 @@
 ## MixMatch - Pytorch
 
-This repository is an unofficial implementation of MixMatch with Pytorch.  
+This repository is an unofficial implementation of MixMatch with Pytorch. Directory structure of the dataset: [here](https://www.kaggle.com/swaroopkml/cifar10-pngs-in-folders?)
 
 **Original Paper**: [MixMatch: A Holistic Approach to Semi-Supervised Learning](https://arxiv.org/abs/1905.02249), by David Berthelot, Nicholas Carlini, Ian Goodfellow, Nicolas Papernot, Avital Oliver, Colin Raffel. 
 
