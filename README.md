@@ -1,4 +1,4 @@
-## MixMatch - Pytorch
+## MixMatch - Pytorch Implementation
 
 This repository is an unofficial implementation of MixMatch with Pytorch. 
 
