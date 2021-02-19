@@ -8,7 +8,7 @@ import torchvision.models
 
 def readConfig(file: str) -> dict:
     with open(file, "r") as f:
-        return yaml.load(f, Loader=yaml.FullLoader)
+        return yaml.load(f, Loader=yaml.SafeLoader)
 
 def set_seed(seed):
     torch.backends.cudnn.deterministic = True
